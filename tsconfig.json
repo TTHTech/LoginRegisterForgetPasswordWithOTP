@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react",
+    "allowJs": true,
+    "lib": ["dom", "esnext"],
+    "esModuleInterop": true
+  }
+}
