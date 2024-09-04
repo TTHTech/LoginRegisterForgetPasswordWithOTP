@@ -4,15 +4,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './LoginScreen';
 import RegisterScreen from './RegisterScreen';
 import HomeScreen from './HomeScreen';
-import ForgotPasswordScreen from './ForgotPasswordScreen'; // Import màn hình quên mật khẩu
-import ResetPasswordScreen from './ResetPasswordScreen'; // Import màn hình đặt lại mật khẩu
+import ForgotPasswordScreen from './ForgotPasswordScreen';
+import ResetPasswordScreen from './ResetPasswordScreen';
+import RequestOtpScreen from './RequestOtpScreen'; // Import màn hình yêu cầu OTP
+import EnterOtpScreen from './EnterOtpScreen'; // Import màn hình nhập OTP
 
 type RootStackParamList = {
   LoginScreen: undefined;
   RegisterScreen: undefined;
   HomeScreen: undefined;
   ForgotPasswordScreen: undefined;
-  ResetPasswordScreen: { email: string }; // Khai báo màn hình ResetPasswordScreen với param email
+  ResetPasswordScreen: { email: string };
+  RequestOtpScreen: undefined; // Màn hình yêu cầu OTP
+  EnterOtpScreen: { email: string }; // Màn hình nhập OTP
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -26,6 +30,8 @@ const App: React.FC = () => {
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
         <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+        <Stack.Screen name="RequestOtpScreen" component={RequestOtpScreen} />
+        <Stack.Screen name="EnterOtpScreen" component={EnterOtpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

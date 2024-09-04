@@ -8,7 +8,8 @@ type RootStackParamList = {
   LoginScreen: undefined;
   HomeScreen: undefined;
   RegisterScreen: undefined;
-  ForgotPasswordScreen: undefined; // Khai báo màn hình quên mật khẩu
+  ForgotPasswordScreen: undefined;
+  RequestOtpScreen: undefined; // Màn hình yêu cầu OTP
 };
 
 type LoginScreenNavigationProp = StackNavigationProp<
@@ -29,7 +30,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.2.82:8080/api/auth/login', {
+      const response = await axios.post('http://172.16.2.178:8080/api/auth/login', {
         username: username,
         password: password,
       });
@@ -78,6 +79,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       {/* Nút quên mật khẩu */}
       <TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
         <Text style={{ color: 'blue', marginTop: 20 }}>Forgot Password?</Text>
+      </TouchableOpacity>
+
+      {/* Nút đăng nhập bằng OTP */}
+      <TouchableOpacity onPress={() => navigation.navigate('RequestOtpScreen')}>
+        <Text style={{ color: 'blue', marginTop: 20 }}>Login with OTP</Text>
       </TouchableOpacity>
     </View>
   );

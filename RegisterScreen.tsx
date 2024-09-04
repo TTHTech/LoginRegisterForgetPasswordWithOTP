@@ -28,14 +28,27 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // Hàm kiểm tra email hợp lệ
+  const validateEmail = (email: string) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
   const handleRegister = async () => {
+    // Kiểm tra email có hợp lệ không
+    if (!validateEmail(email)) {
+      Alert.alert('Error', 'Invalid email format');
+      return;
+    }
+
+    // Kiểm tra password có khớp không
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
 
     try {
-      const response = await axios.post('http://192.168.2.82:8080/api/auth/register', {
+      const response = await axios.post('http://172.16.2.178:8080/api/auth/register', {
         username: username,
         email: email,
         password: password,

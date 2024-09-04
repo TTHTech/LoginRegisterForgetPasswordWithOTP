@@ -27,7 +27,7 @@ const ResetPasswordScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleResetPassword = async () => {
     try {
-      const response = await axios.post('http://192.168.2.82:8080/api/auth/verify-otp', null, {
+      const response = await axios.post('http://172.16.2.178:8080/api/auth/verify-otp', null, {
         params: {
           email: route.params.email,
           otp,
