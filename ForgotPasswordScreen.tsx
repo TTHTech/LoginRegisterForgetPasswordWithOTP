@@ -23,7 +23,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleForgotPassword = async () => {
     try {
-      const response = await axios.post('http://172.16.2.178:8080/api/auth/forgot-password', null, {
+      const response = await axios.post('http://172.172.6.227:8080/api/auth/forgot-password', null, {
         params: { email },
       });
       if (response.status === 200) {

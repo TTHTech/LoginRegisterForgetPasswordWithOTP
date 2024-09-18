@@ -30,7 +30,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://172.16.2.178:8080/api/auth/login', {
+      const response = await axios.post('http://192.168.155.9:8080/api/auth/login', {
         username: username,
         password: password,
       });

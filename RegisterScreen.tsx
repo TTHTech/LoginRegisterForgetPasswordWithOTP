@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 
 type RootStackParamList = {
   LoginScreen: undefined;
   RegisterScreen: undefined;
-  HomeScreen: undefined;
+  OtpVerificationScreen: { email: string }; // Chuyển hướng đến màn hình nhập OTP với email
 };
 
 type RegisterScreenNavigationProp = StackNavigationProp<
@@ -15,11 +14,8 @@ type RegisterScreenNavigationProp = StackNavigationProp<
   'RegisterScreen'
 >;
 
-type RegisterScreenRouteProp = RouteProp<RootStackParamList, 'RegisterScreen'>;
-
 type Props = {
   navigation: RegisterScreenNavigationProp;
-  route: RegisterScreenRouteProp;
 };
 
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
@@ -28,35 +24,34 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Hàm kiểm tra email hợp lệ
   const validateEmail = (email: string) => {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
   };
 
   const handleRegister = async () => {
-    // Kiểm tra email có hợp lệ không
     if (!validateEmail(email)) {
       Alert.alert('Error', 'Invalid email format');
       return;
     }
 
-    // Kiểm tra password có khớp không
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
 
     try {
-      const response = await axios.post('http://172.16.2.178:8080/api/auth/register', {
+      // Gửi yêu cầu đăng ký và gửi OTP
+      const response = await axios.post('http://192.168.155.9:8080/api/auth/register', {
         username: username,
         email: email,
         password: password,
       });
       
       if (response.status === 200) {
-        Alert.alert('Success', 'Registration successful');
-        navigation.navigate('LoginScreen');
+        Alert.alert('Success', 'Registration successful. Please verify the OTP sent to your email.');
+        // Chuyển hướng đến màn hình OtpVerificationScreen và truyền email
+        navigation.navigate('OtpVerificationScreen', { email: email });
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
