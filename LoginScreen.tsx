@@ -3,13 +3,14 @@ import { View, Text, TextInput, Button, Alert, TouchableOpacity } from 'react-na
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   LoginScreen: undefined;
-  HomeScreen: undefined;
+  MainTabs: undefined; // Thêm MainTabs
   RegisterScreen: undefined;
   ForgotPasswordScreen: undefined;
-  RequestOtpScreen: undefined; // Màn hình yêu cầu OTP
+  RequestOtpScreen: undefined;
 };
 
 type LoginScreenNavigationProp = StackNavigationProp<
@@ -36,8 +37,15 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       });
 
       if (response.status === 200) {
+        const { token, userId, email } = response.data; // Lấy email từ phản hồi
+        
+        // Lưu token, userId và email vào AsyncStorage
+        await AsyncStorage.setItem('userToken', token);
+        await AsyncStorage.setItem('userId', userId.toString());
+        await AsyncStorage.setItem('userEmail', email); // Lưu email
+
         Alert.alert('Success', 'Login successful');
-        navigation.navigate('HomeScreen');
+        navigation.navigate('MainTabs'); // Điều hướng đến MainTabs
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {

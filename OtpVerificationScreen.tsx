@@ -3,11 +3,7 @@ import { View, Text, TextInput, Button, Alert } from 'react-native';
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-
-type RootStackParamList = {
-  OtpVerificationScreen: { email?: string; }; // Email không bắt buộc nữa
-  LoginScreen: undefined;
-};
+import { RootStackParamList } from './navigationTypes'; // Import từ navigationTypes
 
 type OtpVerificationNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -36,11 +32,11 @@ const OtpVerificationScreen: React.FC<Props> = ({ navigation, route }) => {
 
       if (response.status === 200) {
         Alert.alert('Success', 'OTP is valid');
-        setOtpValid(true); // Đánh dấu OTP hợp lệ
+        setOtpValid(true);
         navigation.navigate('LoginScreen'); // Chuyển đến màn hình đăng nhập sau khi xác minh OTP
       }
     } catch (error: unknown) {
-      setOtpValid(false); // Đánh dấu OTP không hợp lệ
+      setOtpValid(false);
       if (axios.isAxiosError(error)) {
         Alert.alert('Error', 'Invalid OTP or email');
       } else {
