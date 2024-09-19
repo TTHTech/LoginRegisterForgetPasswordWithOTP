@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import tw from 'tailwind-react-native-classnames';
 
 const ProfileScreen = () => {
   const [userId, setUserId] = useState<string | null>(null);
@@ -13,26 +14,24 @@ const ProfileScreen = () => {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
 
-  // Lấy userId, token và email từ AsyncStorage khi màn hình được load
   useEffect(() => {
     const getUserIdAndToken = async () => {
       try {
         const storedUserId = await AsyncStorage.getItem('userId');
         const token = await AsyncStorage.getItem('userToken');
-        const storedEmail = await AsyncStorage.getItem('userEmail'); // Lấy email từ AsyncStorage
+        const storedEmail = await AsyncStorage.getItem('userEmail');
         setUserId(storedUserId);
         if (storedEmail) {
-          setEmail(storedEmail); // Lưu email để dùng cho OTP
+          setEmail(storedEmail);
         }
 
-        // Gọi API để lấy thông tin người dùng
         if (storedUserId && token) {
           try {
             const response = await axios.get(
               `http://192.168.155.9:8080/api/auth/profile/${storedUserId}`,
               {
                 headers: {
-                  Authorization: `Bearer ${token}` // Gửi token trong header
+                  Authorization: `Bearer ${token}`
                 }
               }
             );
@@ -48,32 +47,31 @@ const ProfileScreen = () => {
               Alert.alert('Error', 'Failed to load profile data.');
             }
           } catch (apiError) {
-            console.error('API Error:', apiError); // Debug log lỗi API
+            console.error('API Error:', apiError);
             Alert.alert('Error', 'Failed to load profile data.');
           }
         } else {
           Alert.alert('Error', 'User ID or Token not found.');
         }
       } catch (error) {
-        console.error('Error loading profile:', error); // Debug log lỗi
+        console.error('Error loading profile:', error);
         Alert.alert('Error', 'Failed to load profile data.');
       }
     };
     getUserIdAndToken();
   }, []);
 
-  // Gửi yêu cầu OTP
   const handleRequestOtp = async () => {
     try {
-      const token = await AsyncStorage.getItem('userToken'); // Lấy token từ AsyncStorage
+      const token = await AsyncStorage.getItem('userToken');
       if (email && token) {
-        console.log('Requesting OTP for email:', email); // Debug log
+        console.log('Requesting OTP for email:', email);
         const response = await axios.post(
           `http://192.168.155.9:8080/api/auth/request-otp-email`,
           { email },
           {
             headers: {
-              Authorization: `Bearer ${token}` // Gửi token trong header
+              Authorization: `Bearer ${token}`
             }
           }
         );
@@ -85,7 +83,7 @@ const ProfileScreen = () => {
         Alert.alert('Error', 'Email not found.');
       }
     } catch (error) {
-      console.error('OTP request error:', error); // Debug log
+      console.error('OTP request error:', error);
       if (axios.isAxiosError(error)) {
         Alert.alert('Error', error.response?.data?.message || 'Failed to send OTP. Please try again.');
       } else {
@@ -94,10 +92,9 @@ const ProfileScreen = () => {
     }
   };
 
-  // Hàm cập nhật thông tin người dùng sau khi nhập OTP
   const handleUpdateProfile = async () => {
     try {
-      const token = await AsyncStorage.getItem('userToken'); // Lấy token từ AsyncStorage
+      const token = await AsyncStorage.getItem('userToken');
       if (userId && token) {
         const response = await axios.put(`http://192.168.155.9:8080/api/auth/profile/update/${userId}`, {
           firstName,
@@ -105,10 +102,10 @@ const ProfileScreen = () => {
           phoneNumber,
           address,
           dateOfBirth,
-          otp, // Gửi OTP để xác minh
+          otp,
         }, {
           headers: {
-            Authorization: `Bearer ${token}` // Gửi token trong header
+            Authorization: `Bearer ${token}`
           }
         });
 
@@ -119,7 +116,7 @@ const ProfileScreen = () => {
         Alert.alert('Error', 'User ID not found.');
       }
     } catch (error) {
-      console.error('Profile update error:', error); // Debug log
+      console.error('Profile update error:', error);
       if (axios.isAxiosError(error)) {
         Alert.alert('Error', error.response?.data?.message || 'Invalid OTP or failed to update profile.');
       } else {
@@ -129,72 +126,86 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Edit Profile</Text>
+    <ScrollView contentContainerStyle={tw`flex-grow p-5 bg-gray-100`}>
+      <Text style={tw`text-3xl font-bold text-center mb-6 text-blue-500`}>Edit Profile</Text>
 
-      <Text>First Name</Text>
-      <TextInput
-        value={firstName}
-        onChangeText={setFirstName}
-        style={styles.input}
-      />
+      <View style={tw`mb-4`}>
+        <Text style={tw`text-lg mb-2`}>First Name</Text>
+        <TextInput
+          value={firstName}
+          onChangeText={setFirstName}
+          style={tw`border border-gray-300 rounded p-2 bg-white`}
+          placeholder="Enter your first name"
+        />
+      </View>
 
-      <Text>Last Name</Text>
-      <TextInput
-        value={lastName}
-        onChangeText={setLastName}
-        style={styles.input}
-      />
+      <View style={tw`mb-4`}>
+        <Text style={tw`text-lg mb-2`}>Last Name</Text>
+        <TextInput
+          value={lastName}
+          onChangeText={setLastName}
+          style={tw`border border-gray-300 rounded p-2 bg-white`}
+          placeholder="Enter your last name"
+        />
+      </View>
 
-      <Text>Phone Number</Text>
-      <TextInput
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        keyboardType="phone-pad"
-        style={styles.input}
-      />
+      <View style={tw`mb-4`}>
+        <Text style={tw`text-lg mb-2`}>Phone Number</Text>
+        <TextInput
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
+          style={tw`border border-gray-300 rounded p-2 bg-white`}
+          placeholder="Enter your phone number"
+        />
+      </View>
 
-      <Text>Address</Text>
-      <TextInput
-        value={address}
-        onChangeText={setAddress}
-        style={styles.input}
-      />
+      <View style={tw`mb-4`}>
+        <Text style={tw`text-lg mb-2`}>Address</Text>
+        <TextInput
+          value={address}
+          onChangeText={setAddress}
+          style={tw`border border-gray-300 rounded p-2 bg-white`}
+          placeholder="Enter your address"
+        />
+      </View>
 
-      <Text>Date of Birth</Text>
-      <TextInput
-        value={dateOfBirth}
-        onChangeText={setDateOfBirth}
-        placeholder="YYYY-MM-DD"
-        style={styles.input}
-      />
+      <View style={tw`mb-4`}>
+        <Text style={tw`text-lg mb-2`}>Date of Birth</Text>
+        <TextInput
+          value={dateOfBirth}
+          onChangeText={setDateOfBirth}
+          placeholder="YYYY-MM-DD"
+          style={tw`border border-gray-300 rounded p-2 bg-white`}
+        />
+      </View>
 
-      <Text>Enter OTP</Text>
-      <TextInput
-        value={otp}
-        onChangeText={setOtp}
-        keyboardType="number-pad"
-        style={styles.input}
-      />
+      <View style={tw`mb-4`}>
+        <Text style={tw`text-lg mb-2`}>Enter OTP</Text>
+        <TextInput
+          value={otp}
+          onChangeText={setOtp}
+          keyboardType="number-pad"
+          style={tw`border border-gray-300 rounded p-2 bg-white`}
+          placeholder="Enter the OTP sent to your email"
+        />
+      </View>
 
-      <Button title="Request OTP" onPress={handleRequestOtp} />
-      <Button title="Update Profile" onPress={handleUpdateProfile} />
-    </View>
+      <TouchableOpacity
+        style={tw`bg-blue-500 py-3 rounded-lg mb-4`}
+        onPress={handleRequestOtp}
+      >
+        <Text style={tw`text-white text-center text-lg`}>Request OTP</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={tw`bg-green-500 py-3 rounded-lg mb-4`}
+        onPress={handleUpdateProfile}
+      >
+        <Text style={tw`text-white text-center text-lg`}>Update Profile</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  input: {
-    borderBottomWidth: 1,
-    marginBottom: 20,
-  },
-});
 
 export default ProfileScreen;

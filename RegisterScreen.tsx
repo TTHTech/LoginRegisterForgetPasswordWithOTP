@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import { StackNavigationProp } from '@react-navigation/stack';
+import tw from 'tailwind-react-native-classnames';
 
 type RootStackParamList = {
   LoginScreen: undefined;
@@ -67,48 +68,53 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, marginBottom: 20 }}>Register</Text>
+    <View style={tw`flex-1 justify-center p-6 bg-gray-100`}>
+      <Text style={tw`text-3xl font-bold text-center mb-6`}>Register</Text>
       
-      <Text>Username</Text>
+      <Text style={tw`text-lg mb-2`}>Username</Text>
       <TextInput
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
         autoCorrect={false}
-        style={{ borderBottomWidth: 1, marginBottom: 20 }}
+        style={tw`border border-gray-300 p-3 rounded mb-4 bg-white`}
       />
 
-      <Text>Email</Text>
+      <Text style={tw`text-lg mb-2`}>Email</Text>
       <TextInput
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
-        style={{ borderBottomWidth: 1, marginBottom: 20 }}
+        style={tw`border border-gray-300 p-3 rounded mb-4 bg-white`}
       />
 
-      <Text>Password</Text>
+      <Text style={tw`text-lg mb-2`}>Password</Text>
       <TextInput
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={{ borderBottomWidth: 1, marginBottom: 20 }}
+        style={tw`border border-gray-300 p-3 rounded mb-4 bg-white`}
       />
 
-      <Text>Confirm Password</Text>
+      <Text style={tw`text-lg mb-2`}>Confirm Password</Text>
       <TextInput
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
-        style={{ borderBottomWidth: 1, marginBottom: 20 }}
+        style={tw`border border-gray-300 p-3 rounded mb-4 bg-white`}
       />
 
-      <Button title="Register" onPress={handleRegister} />
+      <TouchableOpacity
+        onPress={handleRegister}
+        style={tw`bg-blue-500 p-3 rounded mb-4`}
+      >
+        <Text style={tw`text-white text-center font-bold`}>Register</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-        <Text style={{ color: 'blue', marginTop: 20, textAlign: 'center' }}>Back to Login</Text>
+        <Text style={tw`text-blue-500 text-center`}>Back to Login</Text>
       </TouchableOpacity>
     </View>
   );
